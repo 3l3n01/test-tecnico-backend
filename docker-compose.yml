@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:alpine
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    networks:
+      - appnetwork
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=usuario
+      - POSTGRES_PASSWORD=password
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    expose:
+      - 6379
+    networks:
+      - appnetwork
+    restart: unless-stopped
+
+  api_data:
+    image: api_data:1.0.0
+    build:
+      context: ./api
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - appnetwork
+    environment:
+      - NODE_ENV=production
+      - DB_DATABASE=db
+      - DB_HOST=postgres
+      - DB_PASSWORD=password
+      - DB_USERNAME=usuario
+    restart: unless-stopped
+    command: bash -c "
+        npx sequelize-cli db:migrate
+        && npx sequelize-cli db:seed --seed 20220602000505-currency
+        && npx sequelize-cli db:seed --seed 20220602000551-country
+        && npx sequelize-cli db:seed --seed 20220602000601-organization
+        && npx sequelize-cli db:seed --seed 20220602020844-donations
+        && npm run start"
+    depends_on:
+      - postgres
+
+  nestjs:
+    image: nestjs_api:1.0.0
+    build:
+      context: ./reto
+      dockerfile: ./Dockerfile
+    command: npm run start
+    ports:
+      - 3001:3001
+    networks:
+      - appnetwork
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - API_HOST=http://api_data:3000
+      - FORMAT_DATE=DD-MM-YYYY
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - api_data
+
+networks:
+  appnetwork:
+    driver: bridge

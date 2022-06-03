@@ -1,0 +1,674 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Api Donations",
+    "version": "1.0",
+    "contact": {
+      "name": "Enoi Barrera Guzman",
+      "email": "elenoibg@gmail.com"
+    },
+    "description": "Api for the consultation of the donations made to the different countries, by the organizations, the data is included, of quantity as of date. NOTE: it is only for consultation, not modification."
+  },
+  "host": "localhost:3000",
+  "schemes": ["http"],
+  "produces": ["application/json"],
+  "consumes": ["application/json"],
+  "paths": {
+    "/donations": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/200"
+          }
+        },
+        "operationId": "get-donations",
+        "parameters": [
+          {
+            "type": "number",
+            "in": "query",
+            "name": "page",
+            "description": "Page number of the query.",
+            "minimum": 1,
+            "multipleOf": 1,
+            "default": 1
+          },
+          {
+            "type": "number",
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of results per page",
+            "minimum": 1,
+            "maximum": 100,
+            "multipleOf": 1
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "dateStart",
+            "description": "Initial date of consultation",
+            "format": "date"
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "dateEnd",
+            "description": "Consultation end date",
+            "format": "date"
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "countries",
+            "description": "Country by abbreviation that you want to consult, you can request several, separating them by a comma."
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Country": {
+      "title": "Country",
+      "x-stoplight": {
+        "id": "tbvx6c2cyrhqh"
+      },
+      "type": "object",
+      "x-examples": {
+        "Respuesta": {
+          "id": 0,
+          "name": "Sudán",
+          "abbreviation": "SD"
+        }
+      },
+      "description": "Country receiving the donation",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "unique record id"
+        },
+        "name": {
+          "type": "string",
+          "description": "Country name",
+          "minLength": 4,
+          "example": "Sudan"
+        },
+        "abbreviation": {
+          "type": "string",
+          "description": "country abbreviation",
+          "minLength": 2,
+          "maxLength": 4,
+          "example": "SD"
+        }
+      },
+      "required": ["id", "name", "abbreviation"]
+    },
+    "Currency": {
+      "title": "Currency",
+      "x-stoplight": {
+        "id": "ckkffdn60pkjr"
+      },
+      "type": "object",
+      "x-examples": {
+        "Dolar": {
+          "id": 1,
+          "abbreviation": "Dolar",
+          "name": "USD"
+        }
+      },
+      "description": "\nCurrency in which you make the donation",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "unique record id"
+        },
+        "abbreviation": {
+          "type": "string",
+          "description": "currency abbreviation",
+          "minLength": 2,
+          "example": "USD"
+        },
+        "name": {
+          "type": "string",
+          "description": "coin name",
+          "minLength": 4,
+          "example": "Dolar"
+        }
+      },
+      "required": ["id", "abbreviation", "name"]
+    },
+    "Organization": {
+      "title": "Organization",
+      "x-stoplight": {
+        "id": "i4nqxyz49w4kx"
+      },
+      "type": "object",
+      "description": "Organization making the donation",
+      "x-examples": {
+        "Sida": {
+          "id": 0,
+          "name": "Sida",
+          "abbreviation": "SD"
+        }
+      },
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "unique record id"
+        },
+        "name": {
+          "type": "string",
+          "description": "Organization name's",
+          "minLength": 4,
+          "example": "SIDA"
+        },
+        "abbreviation": {
+          "type": "string",
+          "minLength": 3,
+          "example": "SD",
+          "description": "Organization abbreviation"
+        }
+      },
+      "required": ["id", "name", "abbreviation"]
+    },
+    "Donation": {
+      "title": "Donation",
+      "x-stoplight": {
+        "id": "uyktsrilkthhn"
+      },
+      "type": "object",
+      "description": "Donation made from an organization to a country",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "unique record id"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 1,
+          "example": 1000,
+          "description": "Amount that was donated by the organization"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "example": "2013-07-19",
+          "description": "Date the donation was made"
+        },
+        "currencyId": {
+          "type": "number",
+          "description": "id of the currency in which the donation was made."
+        },
+        "organizationId": {
+          "type": "number",
+          "description": "ID of the organization that made the donation."
+        },
+        "countryId": {
+          "type": "number",
+          "description": "Country receiving the donation."
+        }
+      },
+      "required": [
+        "id",
+        "value",
+        "date",
+        "currencyId",
+        "organizationId",
+        "countryId"
+      ]
+    }
+  },
+  "basePath": "/api",
+  "responses": {
+    "200": {
+      "description": "Example response",
+      "content": {
+        "application/json": {
+          "schema": {
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "currency": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "abbreviation": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "organization": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "abbreviation": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "country": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "abbreviation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "pageSize": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              },
+              "count": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "x-examples": {
+          "example-1": {
+            "data": [
+              {
+                "id": "1",
+                "value": "7019",
+                "date": "2018-03-16T12:38:50.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "UD",
+                  "abbreviation": "UD"
+                },
+                "country": {
+                  "name": "Sudán",
+                  "abbreviation": "SD"
+                }
+              },
+              {
+                "id": "2",
+                "value": "1330",
+                "date": "2017-04-28T19:42:24.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "Svenska institutet",
+                  "abbreviation": "SI"
+                },
+                "country": {
+                  "name": "Iraq",
+                  "abbreviation": "IQ"
+                }
+              },
+              {
+                "id": "3",
+                "value": "25388",
+                "date": "2021-10-20T09:34:50.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "UD",
+                  "abbreviation": "UD"
+                },
+                "country": {
+                  "name": "Iraq",
+                  "abbreviation": "IQ"
+                }
+              },
+              {
+                "id": "4",
+                "value": "19175",
+                "date": "2020-04-24T02:19:18.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "Svenska institutet",
+                  "abbreviation": "SI"
+                },
+                "country": {
+                  "name": "Sudán",
+                  "abbreviation": "SD"
+                }
+              },
+              {
+                "id": "5",
+                "value": "13549",
+                "date": "2018-01-27T01:45:00.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "Folke Bernadotte Academy",
+                  "abbreviation": "FBA"
+                },
+                "country": {
+                  "name": "Sudán",
+                  "abbreviation": "SD"
+                }
+              },
+              {
+                "id": "6",
+                "value": "54430",
+                "date": "2016-10-15T12:53:17.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "UD",
+                  "abbreviation": "UD"
+                },
+                "country": {
+                  "name": "Iraq",
+                  "abbreviation": "IQ"
+                }
+              },
+              {
+                "id": "7",
+                "value": "37532",
+                "date": "2017-09-01T20:07:55.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "Sida",
+                  "abbreviation": "SD"
+                },
+                "country": {
+                  "name": "Iraq",
+                  "abbreviation": "IQ"
+                }
+              },
+              {
+                "id": "8",
+                "value": "23134",
+                "date": "2017-08-31T13:03:05.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "Foundation ICCO",
+                  "abbreviation": "FICCO"
+                },
+                "country": {
+                  "name": "Iraq",
+                  "abbreviation": "IQ"
+                }
+              },
+              {
+                "id": "9",
+                "value": "21258",
+                "date": "2015-10-22T08:07:46.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "Foundation ICCO",
+                  "abbreviation": "FICCO"
+                },
+                "country": {
+                  "name": "Iraq",
+                  "abbreviation": "IQ"
+                }
+              },
+              {
+                "id": "10",
+                "value": "22368",
+                "date": "2022-04-27T07:11:16.000Z",
+                "currency": {
+                  "name": "Dolar",
+                  "abbreviation": "USD"
+                },
+                "organization": {
+                  "name": "Foundation ICCO",
+                  "abbreviation": "FICCO"
+                },
+                "country": {
+                  "name": "Sudán",
+                  "abbreviation": "SD"
+                }
+              }
+            ],
+            "meta": {
+              "pageSize": 10,
+              "page": 0,
+              "total": 1000,
+              "count": 10
+            }
+          }
+        }
+      },
+      "examples": {
+        "Success": {
+          "data": [
+            {
+              "id": "1",
+              "value": "7019",
+              "date": "2018-03-16T12:38:50.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "UD",
+                "abbreviation": "UD"
+              },
+              "country": {
+                "name": "Sudán",
+                "abbreviation": "SD"
+              }
+            },
+            {
+              "id": "2",
+              "value": "1330",
+              "date": "2017-04-28T19:42:24.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "Svenska institutet",
+                "abbreviation": "SI"
+              },
+              "country": {
+                "name": "Iraq",
+                "abbreviation": "IQ"
+              }
+            },
+            {
+              "id": "3",
+              "value": "25388",
+              "date": "2021-10-20T09:34:50.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "UD",
+                "abbreviation": "UD"
+              },
+              "country": {
+                "name": "Iraq",
+                "abbreviation": "IQ"
+              }
+            },
+            {
+              "id": "4",
+              "value": "19175",
+              "date": "2020-04-24T02:19:18.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "Svenska institutet",
+                "abbreviation": "SI"
+              },
+              "country": {
+                "name": "Sudán",
+                "abbreviation": "SD"
+              }
+            },
+            {
+              "id": "5",
+              "value": "13549",
+              "date": "2018-01-27T01:45:00.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "Folke Bernadotte Academy",
+                "abbreviation": "FBA"
+              },
+              "country": {
+                "name": "Sudán",
+                "abbreviation": "SD"
+              }
+            },
+            {
+              "id": "6",
+              "value": "54430",
+              "date": "2016-10-15T12:53:17.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "UD",
+                "abbreviation": "UD"
+              },
+              "country": {
+                "name": "Iraq",
+                "abbreviation": "IQ"
+              }
+            },
+            {
+              "id": "7",
+              "value": "37532",
+              "date": "2017-09-01T20:07:55.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "Sida",
+                "abbreviation": "SD"
+              },
+              "country": {
+                "name": "Iraq",
+                "abbreviation": "IQ"
+              }
+            },
+            {
+              "id": "8",
+              "value": "23134",
+              "date": "2017-08-31T13:03:05.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "Foundation ICCO",
+                "abbreviation": "FICCO"
+              },
+              "country": {
+                "name": "Iraq",
+                "abbreviation": "IQ"
+              }
+            },
+            {
+              "id": "9",
+              "value": "21258",
+              "date": "2015-10-22T08:07:46.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "Foundation ICCO",
+                "abbreviation": "FICCO"
+              },
+              "country": {
+                "name": "Iraq",
+                "abbreviation": "IQ"
+              }
+            },
+            {
+              "id": "10",
+              "value": "22368",
+              "date": "2022-04-27T07:11:16.000Z",
+              "currency": {
+                "name": "Dolar",
+                "abbreviation": "USD"
+              },
+              "organization": {
+                "name": "Foundation ICCO",
+                "abbreviation": "FICCO"
+              },
+              "country": {
+                "name": "Sudán",
+                "abbreviation": "SD"
+              }
+            }
+          ],
+          "meta": {
+            "pageSize": 10,
+            "page": 0,
+            "total": 1000,
+            "count": 10
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed --seed 20220602000505-currency
+npx sequelize-cli db:seed --seed 20220602000551-country
+npx sequelize-cli db:seed --seed 20220602000601-organization
+npx sequelize-cli db:seed --seed 20220602020844-donations
+
+Docker
+docker run --rm --name db -e POSTGRES_PASSWORD=password -e POSTGRES_USER=usuario -e POSTGRES_DB=db -p 5432:5432 postgres:alpine
+docker run --rm --name redis -p your_PortNumber:6379 redis:alpine

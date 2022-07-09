@@ -2,6 +2,56 @@
 El proyecto consta de 2 elemmentos, los cuales son un api para la generacion de los datos, y otra que consume el api anterior, los datos son generados de forma aleatoria
 al momento de iniciar el servicio.
 
+## Descripcion
+
+Organización de ayuda humanitaria
+Una organización de ayuda humanitaria trabaja principalmente en Sudán. Has sido
+contratado para desarrollar una aplicación que muestre la ayuda monetaria enviada a
+Sudán desde último año hasta 5 años atrás por todas las diferentes organizaciones,
+agencias y gobiernos, agrupadas por año y ordenadas desde la que más haya contribuido
+en total hasta la que menos. La aplicación debe devolver un JSON, no necesita de ninguna
+interfaz. Dicho JSON será usado por otro website para mostrar los datos.
+
+La información requerida por la aplicación puede ser extraída de
+https://iatidatastore.iatistandard.org/documentation (en inglés). Openaid tiene una API
+abierta que puede devolver información en XML o JSON. Para poder obtener los datos de
+ayuda monetaria puede consultarse mediante el código de país, SD corresponde a Sudán.
+Consiste en escribir una aplicación que en cada solicitud obtenga los datos de la API de
+Openaid y los agregue en el formato especificado. La respuesta necesita estar cacheada o
+guardada de alguna forma, no importa el método. La organización necesita esto para evitar
+que usuarios malintencionados puedan usar la API de Openaid de mala manera. Dado un
+código de país la aplicación debe ajustarse a la estructura JSON que se especifica a
+continuación.
+
+Ejemplo
+Iraq tiene el código de país IQ, el año es 2012. La respuesta generada podría ser:
+```
+{
+  "2011": {
+    "Sida": 181469583
+  },
+  "2010": {
+    "Sida": 149667518,
+    "UD": 6105000
+  },
+  "2009": {
+    "Sida": 122295311,
+    "UD": 30291000
+  },
+  "2008": {
+    "Sida": 128969145,
+    "UD": 33851000,
+    "Folke Bernadotte Academy": 173000,
+    "Svenska institutet": 125000
+  },
+  "2007": {
+    "Sida": 101561481,
+    "UD": 7399000,
+    "Folke Bernadotte Academy": 6000
+  }
+}
+```
+
 ## Dependncias
 
 El proyecto cuenta con las siguientes dependencias, las cuales son:
